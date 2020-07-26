@@ -41,7 +41,7 @@ func endpoint(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	if fileName == "" {
-		http.Error(writer, "Get 'filename' not specified in url.", 400)
+		http.Error(writer, "Query 'filename' not specified in url.", 400)
 		return
 	}
 
@@ -54,7 +54,7 @@ func endpoint(writer http.ResponseWriter, request *http.Request) {
 	openFile, err := os.Open(fileName)
 	defer openFile.Close()
 	if err != nil {
-		http.Error(writer, "File"+fileName+"not found", 404)
+		http.Error(writer, "File "+fileName+" not found", 404)
 		return
 	}
 
