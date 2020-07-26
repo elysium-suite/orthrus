@@ -50,12 +50,12 @@ func endpoint(writer http.ResponseWriter, request *http.Request) {
 	openFile.Read(fileHeader)
 	contentType := http.DetectContentType(fileHeader)
 
-	FileStat, _ := openFile.Stat()
-	FileSize := strconv.FormatInt(FileStat.Size(), 10)
+	fileStat, _ := openFile.Stat()
+	fileSize := strconv.FormatInt(fileStat.Size(), 10)
 
 	writer.Header().Set("Content-Disposition", "attachment; filename="+fileName)
 	writer.Header().Set("Content-Type", contentType)
-	writer.Header().Set("Content-Length", FileSize)
+	writer.Header().Set("Content-Length", fileSize)
 
 	openFile.Seek(0, 0)
 	io.Copy(writer, openFile)
