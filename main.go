@@ -27,8 +27,8 @@ func validateString(input string) bool {
 }
 
 func endpoint(writer http.ResponseWriter, request *http.Request) {
-	fileName := request.URL.Query().Get("filename")
-	password := request.URL.Query().Get("password")
+	operatingSystem := "aeacus-" + request.URL.Query().Get("os") + ".zip"
+	password := request.URL.Query().Get("pass")
 
 	pass, err := ioutil.ReadFile("pass.txt")
 	if err != nil {
@@ -40,21 +40,28 @@ func endpoint(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	if fileName == "" {
-		http.Error(writer, "Query 'filename' not specified in url.", 400)
+	if operatingSystem == "" {
+		http.Error(writer, "Query 'os' not specified in url.", 400)
 		return
 	}
 
-	if !validateString(fileName) {
+	if !validateString(operatingSystem) {
 		http.Error(writer, "Please specify a clean file path", 400)
+		return
+	} else if operatingSystem != "win32" {
+		http.Error(writer, "OS not supported", 400)
+		return
+	} else if operatingSystem != "linux" {
+		http.Error(writer, "OS not supported", 400)
+		return
 	}
 
-	fmt.Println("Client requests: " + fileName)
+	fmt.Println("Client requests: " + operatingSystem)
 
-	openFile, err := os.Open(fileName)
+	openFile, err := os.Open(operatingSystem)
 	defer openFile.Close()
 	if err != nil {
-		http.Error(writer, "File "+fileName+" not found", 404)
+		http.Error(writer, "File "+operatingSystem+" not found", 404)
 		return
 	}
 
@@ -65,7 +72,7 @@ func endpoint(writer http.ResponseWriter, request *http.Request) {
 	fileStat, _ := openFile.Stat()
 	fileSize := strconv.FormatInt(fileStat.Size(), 10)
 
-	writer.Header().Set("Content-Disposition", "attachment; filename="+fileName)
+	writer.Header().Set("Content-Disposition", "attachment; filename="+operatingSystem)
 	writer.Header().Set("Content-Type", contentType)
 	writer.Header().Set("Content-Length", fileSize)
 
