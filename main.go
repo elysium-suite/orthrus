@@ -20,9 +20,6 @@ func main() {
 }
 
 func validateString(input string) bool {
-	if input == "" {
-		return false
-	}
 	validationString := `^[a-zA-Z0-9-_.]+$`
 
 	inputValidation := regexp.MustCompile(validationString)
