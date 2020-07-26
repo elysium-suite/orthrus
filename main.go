@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"regexp"
 	"strconv"
 )
 
@@ -16,6 +17,16 @@ func main() {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+}
+
+func validateString(input string) bool {
+	if input == "" {
+		return false
+	}
+	validationString := `^[a-zA-Z0-9-_.]+$`
+
+	inputValidation := regexp.MustCompile(validationString)
+	return inputValidation.MatchString(input)
 }
 
 func endpoint(writer http.ResponseWriter, request *http.Request) {
@@ -35,6 +46,10 @@ func endpoint(writer http.ResponseWriter, request *http.Request) {
 	if fileName == "" {
 		http.Error(writer, "Get 'filename' not specified in url.", 400)
 		return
+	}
+
+	if !validateString(fileName) {
+		http.Error(writer, "Please specify a clean file path", 400)
 	}
 
 	fmt.Println("Client requests: " + fileName)
